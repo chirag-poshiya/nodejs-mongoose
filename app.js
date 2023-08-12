@@ -34,7 +34,7 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb://localhost:27017/admin', {useNewUrlParser: true, useUnifiedTopology: true}
+    'mongodb://localhost:27017/shop', {useNewUrlParser: true, useUnifiedTopology: true}
   )
   .then(result => {
     app.listen(3000); 
