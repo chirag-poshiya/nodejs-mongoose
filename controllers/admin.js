@@ -2,6 +2,7 @@ const product = require('../models/product');
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
+  console.log(req.session);
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
@@ -20,7 +21,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     imageUrl: imageUrl, 
     description: description,
-    userId: req.session.user,
+    userId: req.user,
     isAuthenticated: req.session.isLoggedIn
   });
   product

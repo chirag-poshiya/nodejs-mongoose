@@ -1,3 +1,4 @@
+const { rawListeners } = require('../models/user');
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
@@ -13,12 +14,21 @@ exports.postLogin = (req, res, next) => {
   // res.setHeader("Set-Cookie", "loggedIn=true;"); // Cookie
   User.findById('64d706f646338d0b9848c05b')
   .then(user => {
-
+      // console.log('in')
       req.session.isLoggedIn = true;
       req.session.user = user;
       // req.user = user;
-    console.log('here')  
+      // console.log('here' ,req.session)  
+      req.session.save((err) => {
+        console.log(err)
+        res.redirect("/");
+      })
     })
     .catch(err => console.log(err));
-  res.redirect("/");
 };
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy(() => {
+    res.redirect('/')
+  });
+}
