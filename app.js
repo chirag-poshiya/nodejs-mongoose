@@ -13,8 +13,8 @@ const MONGODB_URI = "mongodb://localhost:27017/shop";
 
 const app = express();
 const store = new MongoDBStore({
-  uri: MONGODB_URI, 
-  collection: 'sessions',
+  uri: MONGODB_URI,
+  collection: 'sessions'
 });
 
 app.set('view engine', 'ejs');
@@ -26,19 +26,25 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret: 'my secret', resave: false, saveUninitialized: false, store: store}))
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
 
 app.use((req, res, next) => {
-  if(req.session.user) {
-    User.findById(req.session.user._id)
-      .then(user => {
-        req.user = user;
-        next();
-      })
-      .catch(err => console.log(err));
-  }else{
-    next();
+  if (!req.session.user) {
+    return next();
   }
+  User.findById(req.session.user._id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
 });
 
 app.use('/admin', adminRoutes);
@@ -53,19 +59,18 @@ mongoose
   )
   .then(result => {
     User.findOne().then(user => {
-      if(!user){
+      if (!user) {
         const user = new User({
-          name: "Chirag",
-          email: "chiragpatel3669@gmail.com",
-          cart:{
-            items:[]
+          name: 'Max',
+          email: 'max@test.com',
+          cart: {
+            items: []
           }
-        })
+        });
         user.save();
       }
-    })
-    
-    app.listen(3000); 
+    });
+    app.listen(3000);
   })
   .catch(err => {
     console.log(err);
